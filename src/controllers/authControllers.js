@@ -53,7 +53,7 @@ export const Logout = async (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.SECURE_COOKIE === "true", // sesuaikan env
+      secure: process.env.SECURE_COOKIE,
       sameSite: "none",
       path: "/",
     });
