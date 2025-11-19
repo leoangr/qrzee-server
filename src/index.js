@@ -19,8 +19,11 @@ app.use(cookieParser())
 app.use('/api/auth', authRoutes)
 app.use('/api', qrRoutes)
 app.use('/api', profileRoutes)
-app.use('/uploads', express.static("src/uploads"))
 
-app.listen(process.env.PORT, () => {
-    console.log(`server is running at port ${process.env.PORT} `)
-})
+if (!process.env.VERCEL) {
+  app.listen(process.env.PORT, () => {
+    console.log(`Server running on port ${process.env.PORT}`);
+  });
+}
+
+export default app

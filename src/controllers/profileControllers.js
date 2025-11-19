@@ -19,34 +19,32 @@ export const updateUsername = async (req, res) => {
 }
 
 export const uploadImage = async (req, res) => {
-    try {
-        
-        if (req.fileValidationError) {
-            return res.status(400).json({
-                status: 0,
-                message: req.fileValidationError
-            });
-        }
-
-        if (!req.file) {
-            return res.status(400).json({ 
-                status: 0,
-                message: "Image is required"
-            });
-        }
-
-        const result = await profileServices.processUploadImage(req.file.filename)
-
-        if (!result.status) {
-            return res.status(400).json(result)
-        }
-
-        return res.status(200).json(result)
-
-    } catch (error) {
-        console.error(error)
-        return res.status(500).json(error)
+  try {
+    if (req.fileValidationError) {
+      return res.status(400).json({
+        status: 0,
+        message: req.fileValidationError,
+      });
     }
+
+    if (!req.file) {
+      return res.status(400).json({
+        status: 0,
+        message: "Image is required",
+      });
+    }
+
+    const result = await profileServices.processUploadImage(req.file.buffer);
+
+    if (!result.status) {
+      return res.status(400).json(result);
+    }
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
 }
 
 export const updateImageProfile = async (req, res) => {

@@ -1,5 +1,6 @@
 import { connectDatabase } from "../db/connect.js"
 import { deleteFile } from "../utils/deleteFile.js"
+import cloudinary from "../cloudinary.js";
 
 export const processUpdateUsername = async (iduser, username) => {
     try {
@@ -61,25 +62,32 @@ export const processUpdateUsername = async (iduser, username) => {
     }
 }
 
-export const processUploadImage = async (filename) => {
-    try {
-
-        const domain = process.env.DOMAIN
-        const imagePath = `${domain}/uploads/${filename}`;
-
-        return {
-            status: 1,
-            message: "Image add successfully",
-            imageUrl: imagePath
+export const processUploadImage = async (fileBuffer) => {
+  try {
+    // Upload ke Cloudinary
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "portfolio" }, // folder opsional di Cloudinary
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
         }
+      );
+      stream.end(fileBuffer);
+    });
 
-    } catch (error) {
-        console.error(error)
-        return {
-            status: 0,
-            message: "Internal server error"
-        }
-    }
+    return {
+      status: 1,
+      message: "Image added successfully",
+      imageUrl: result.secure_url,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: 0,
+      message: "Internal server error",
+    };
+  }
 }
 
 export const processUpdateProfileImage = async(iduser, image) => {
