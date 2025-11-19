@@ -49,6 +49,22 @@ export const Login = async (req, res) => {
 
 }
 
+export const Logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.SECURE_COOKIE === "true", // sesuaikan env
+      sameSite: "none",
+      path: "/",
+    });
+    return res.status(200).json({ status: 1, message: "Logged out successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: 0, message: "Logout failed" });
+  }
+};
+
+
 export const verifyToken = (req, res, next) => {
     const token = req.cookies.token
 
